@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Query, Body, Cookie, Header, status
-from enum import Enum
-from pydantic import BaseModel
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.websockets import WebSocket
-from  routes import routerTest
+from fastapi import FastAPI, Query, Body, Cookie, Header, status;
+from enum import Enum;
+from pydantic import BaseModel;
+from fastapi.middleware.cors import CORSMiddleware;
+from fastapi.websockets import WebSocket;
+from  routes import routerTest;
+from utils.user_input import user_target;
 
 app = FastAPI()
 
@@ -152,27 +153,30 @@ async def test_http_status():
 # websocket
 @app.websocket_route('/ws')
 async def ws(websocket: WebSocket):
-    await ws.accept()
-    await ws.send_json({
+    await websocket.accept()
+    await websocket.send_json({
         'msg': 'ws msg'
     })
+    while True:
+        data = await websocket.receive_text();
+        user_target(data);
 
-def test_read_main():
-    client = TestClient(app)
-    response = client.get('/')
-    assert response.status_code == 200
-    assert response.json() == {
-        'msg': 'ws msg'
-    }
-
-def test_websocket():
-    client = TestClient(app)
-    with client.websocket_connect('/ws') as websocket:
-        data = websocket.receive_json()
-        assert data == {
-            'msg': 'ws msg'
-        }
+# def test_read_main():
+#     client = TestClient(app)
+#     response = client.get('/')
+#     assert response.status_code == 200
+#     assert response.json() == {
+#         'msg': 'ws msg'
+#     }
+#
+# def test_websocket():
+#     client = TestClient(app)
+#     with client.websocket_connect('/ws') as websocket:
+#         data = websocket.receive_json()
+#         assert data == {
+#             'msg': 'ws msg'
+#         }
 
 if __name__ == '__main__':
     import uvicorn;
-    uvicorn.run(app, host='0.0.0.0', port=8000);
+    uvicorn.run(app='main:app', host='0.0.0.0', port=8000, reload=True, debug=True);
