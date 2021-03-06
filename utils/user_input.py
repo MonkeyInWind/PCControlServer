@@ -1,45 +1,49 @@
-from pymouse import PyMouse;
-from pykeyboard import PyKeyboard;
+from pynput.mouse import Button, Controller as mouseController;
+from pynput.keyboard import Key, Controller as keyBoardController;
 import json;
 import time;
 
-m = PyMouse();
-k = PyKeyboard();
+mouse = mouseController();
+keyboard = keyBoardController();
 
-def mouse_move(disAxis):
-    current_axis = m.position();
-    # print(axis[0]);
-    # print(disAxis);
-    nextX = current_axis[0] + disAxis['disX'] * 3;
-    nextY = current_axis[1] + disAxis['disY'] * 3;
-    print(nextX, nextY);
-    m.move(nextX, nextY);
+# PyUserInput 键盘事件不全  鼠标双击在mac不生效
+# pyautogui 每两次移动鼠标之间有最短0.1s的duration  鼠标双击在mac不生效
+# 这里选用pynput
+
+def mouse_move(dis_axis):
+    mouse.move(dis_axis['disX'] * 3, dis_axis['disY'] * 3);
 
 def user_tap():
-    position = m.position();
-    m.click(position[0], position[1]);
-    print('tap');
+    mouse.click(Button.left, 1);
 
 def user_long_press():
-    position = m.position();
-    m.click(position[0], position[1], 2);
-    print('long press');
+    mouse.click(Button.right, 1);
 
 def user_double_tap():
-    position = m.position();
-    m.click(position[0], position[1], 1, 2);
-    print('double tap');
+    mouse.click(Button.left, 2);
+
+def keyboard_press(clickKey):
+    keyboard.press(Key[clickKey]);
+
+def user_input(message):
+    keyboard.type(message);
 
 operation_map = {
     'tap': user_tap,
     'doubleTap': user_double_tap,
     'longPress': user_long_press,
-    'move': mouse_move
+    'move': mouse_move,
+    'keyboard': keyboard_press,
+    'input': user_input
 }
 
 def user_target(target):
     target_dict = json.loads(target);
-    if 'axis' in target_dict:
-        operation_map[target_dict['operation']](target_dict['axis']);
+    if target_dict['operation'] == 'move':
+        operation_map['move'](target_dict['axis']);
+    elif target_dict['operation'] == 'input':
+        operation_map['input'](target_dict['message']);
+    elif target_dict['operation'] == 'keyboard':
+        operation_map['keyboard'](target_dict['key']);
     else:
         operation_map[target_dict['operation']]();
