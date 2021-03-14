@@ -163,7 +163,11 @@ def get_sys_info():
 async def ws(websocket: WebSocket):
     sys_info = get_sys_info();
     await websocket.accept();
-    await websocket.send_json(sys_info);
+    await websocket.send_json({
+        'result': True,
+        'type': 'system_info',
+        'data': sys_info
+    });
     while True:
         data = await websocket.receive_text();
         user_target(data);
