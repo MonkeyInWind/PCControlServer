@@ -26,7 +26,10 @@ def keyboard_press(clickKey):
     keyboard.press(Key[clickKey]);
 
 def hot_key_press(hot_key):
-    print(hot_key);
+    keys = hot_key.split('+');
+    with keyboard.pressed(Key[keys[0]]):
+        keyboard.press(keys[1]);
+        keyboard.release(keys[1]);
 
 def user_input(message):
     keyboard.type(message);
