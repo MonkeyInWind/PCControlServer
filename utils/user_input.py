@@ -25,6 +25,9 @@ def user_double_tap():
 def keyboard_press(clickKey):
     keyboard.press(Key[clickKey]);
 
+def hot_key_press(hot_key):
+    print(hot_key);
+
 def user_input(message):
     keyboard.type(message);
 
@@ -33,7 +36,8 @@ operation_map = {
     'doubleTap': user_double_tap,
     'longPress': user_long_press,
     'move': mouse_move,
-    'keyboard': keyboard_press,
+    'keyboard_press': keyboard_press,
+    'hot_key_press': hot_key_press,
     'input': user_input
 }
 
@@ -43,7 +47,9 @@ def user_target(target):
         operation_map['move'](target_dict['axis']);
     elif target_dict['operation'] == 'input':
         operation_map['input'](target_dict['message']);
-    elif target_dict['operation'] == 'keyboard':
-        operation_map['keyboard'](target_dict['key']);
+    elif target_dict['operation'] == 'keyboard_press':
+        operation_map['keyboard_press'](target_dict['key']);
+    elif target_dict['operation'] == 'hot_key_press':
+        operation_map['hot_key_press'](target_dict['key']);
     else:
         operation_map[target_dict['operation']]();
