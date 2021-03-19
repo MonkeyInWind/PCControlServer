@@ -38,21 +38,17 @@ operation_map = {
     'tap': user_tap,
     'doubleTap': user_double_tap,
     'longPress': user_long_press,
-    'move': mouse_move,
-    'keyboard_press': keyboard_press,
-    'hot_key_press': hot_key_press,
-    'input': user_input
 }
 
 def user_target(target):
     target_dict = json.loads(target);
     if target_dict['operation'] == 'move':
-        operation_map['move'](target_dict['axis']);
+        mouse_move(target_dict['axis']);
     elif target_dict['operation'] == 'input':
-        operation_map['input'](target_dict['message']);
+        user_input(target_dict['message']);
     elif target_dict['operation'] == 'keyboard_press':
-        operation_map['keyboard_press'](target_dict['key']);
+        keyboard_press(target_dict['key']);
     elif target_dict['operation'] == 'hot_key_press':
-        operation_map['hot_key_press'](target_dict['key']);
+        hot_key_press(target_dict['key']);
     else:
         operation_map[target_dict['operation']]();
