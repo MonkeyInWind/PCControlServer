@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware;
 from fastapi.websockets import WebSocket;
 from  routes import routerTest;
 from utils.user_input import user_target;
-import platform;
+from utils.utils import get_sys_info, print_ip_qrcode;
 
 app = FastAPI()
 
@@ -19,12 +19,12 @@ app.add_middleware(
 
 # app.include_router(routerTest.router, prefix='/api')
 #
-# @app.get('/')
-# async def hello_world():
-#     return {
-#         'mess': 'hello world'
-#     }
-#
+@app.get('/')
+async def hello_world():
+    return {
+        'mess': 'hello world'
+    }
+
 # @app.get('/test/a')
 # async def testA():
 #     return 'this is a'
@@ -152,12 +152,6 @@ app.add_middleware(
 #     return 'status: 201'
 
 
-def get_sys_info():
-    sys_info = platform.uname()._asdict();
-    sys_info['platform'] = platform.platform();
-    print(sys_info);
-    return sys_info;
-
 # websocket
 @app.websocket_route('/ws')
 async def ws(websocket: WebSocket):
@@ -190,4 +184,7 @@ async def ws(websocket: WebSocket):
 
 if __name__ == '__main__':
     import uvicorn;
-    uvicorn.run(app='main:app', host='0.0.0.0', port=8000, reload=True, debug=True);
+    port = 8000;
+    print_ip_qrcode(port);
+    uvicorn.run(app='main:app', host='0.0.0.0', port=port, reload=True, debug=True);
+
